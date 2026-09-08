@@ -3,9 +3,10 @@ import { useAuth } from "../hooks/useAuth"
 import { useNavigate } from "react-router-dom"
 
 export const Scan = () => {
+  const [scanMode, setScanMode] = useState("dish") // "dish" or "packaged"
   const [selectedFile, setSelectedFile] = useState(null)
   const [loading, setLoading] = useState(false)
-  const { user, token } = useAuth()
+  const { token } = useAuth()
   const navigate = useNavigate()
 
   const handleFileChange = (e) => {
@@ -24,13 +25,15 @@ export const Scan = () => {
     const formData = new FormData()
     formData.append("file", selectedFile)
 
+    const endpoint = scanMode === "packaged" ? "/api/scans/analyze-packaged" : "/api/scans/analyze"
+
     try {
       const headers = {}
       if (token) {
         headers["Authorization"] = `Bearer ${token}`
       }
 
-      const response = await fetch("/api/scans/analyze", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: headers,
         body: formData
@@ -51,8 +54,54 @@ export const Scan = () => {
   }
 
   return (
-    <div style={{ maxWidth: "600px", margin: "3rem auto", padding: "2rem", background: "white", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "1.5rem" }}>Scan Your Food</h2>
+    <div style={{ maxWidth: "640px", margin: "2rem auto", padding: "2rem", background: "white", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+      <h2 style={{ textAlign: "center", marginBottom: "1rem" }}>NutriScan AI Scanner</h2>
+
+      {/* Mode Selector Tabs */}
+      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", background: "#f1f5f9", padding: "0.4rem", borderRadius: "8px" }}>
+        <button
+          onClick={() => { setScanMode("dish"); setSelectedFile(null); }}
+          style={{
+            flex: 1,
+            padding: "0.75rem",
+            border: "none",
+            borderRadius: "6px",
+            fontSize: "0.95rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            background: scanMode === "dish" ? "#3f51b5" : "transparent",
+            color: scanMode === "dish" ? "white" : "#64748b",
+            transition: "all 0.2s"
+          }}
+        >
+          🍛 Prepared Food Dish
+        </button>
+        <button
+          onClick={() => { setScanMode("packaged"); setSelectedFile(null); }}
+          style={{
+            flex: 1,
+            padding: "0.75rem",
+            border: "none",
+            borderRadius: "6px",
+            fontSize: "0.95rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            background: scanMode === "packaged" ? "#3f51b5" : "transparent",
+            color: scanMode === "packaged" ? "white" : "#64748b",
+            transition: "all 0.2s"
+          }}
+        >
+          🏷️ Packaged Ingredients (OCR)
+        </button>
+      </div>
+
+      <div style={{ padding: "0.75rem", background: "#f8fafc", borderRadius: "6px", marginBottom: "1.5rem", fontSize: "0.9rem", color: "#475569", borderLeft: "4px solid #3f51b5" }}>
+        {scanMode === "dish" ? (
+          <span><strong>Dish Recognition Mode:</strong> Upload a photo of a meal or dish to detect calories, macros, and AI health score.</span>
+        ) : (
+          <span><strong>OCR Ingredient Scanner:</strong> Upload a photo of the <strong>Ingredients Label</strong> on packaged food (e.g. chips, biscuits, cereal) to detect palm oil, trans fats, preservatives, and harmful additives.</span>
+        )}
+      </div>
 
       {selectedFile && (
         <div style={{ width: "100%", height: "240px", border: "1px dashed #cbd5e1", borderRadius: "8px", marginBottom: "1.5rem", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", background: "#f8fafc" }}>
@@ -86,7 +135,7 @@ export const Scan = () => {
             cursor: "pointer"
           }}
         >
-          {selectedFile ? "Change Image" : "📷 Select Food Image"}
+          {selectedFile ? "Change Image" : scanMode === "dish" ? "📷 Select Food Dish Image" : "📸 Select Packaged Ingredient Label Photo"}
         </button>
         <button
           onClick={handleAnalyze}
@@ -104,7 +153,9 @@ export const Scan = () => {
             cursor: selectedFile && !loading ? "pointer" : "not-allowed"
           }}
         >
-          {loading ? "Analyzing Food Nutrition..." : "🔍 Analyze Food"}
+          {loading
+            ? scanMode === "packaged" ? "Reading Ingredients Label with OCR..." : "Analyzing Food Dish..."
+            : scanMode === "packaged" ? "🔍 Read Ingredients & Analyze Health" : "🔍 Analyze Food Dish"}
         </button>
       </div>
     </div>

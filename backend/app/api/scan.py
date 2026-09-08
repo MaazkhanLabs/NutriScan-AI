@@ -4,6 +4,8 @@ from app.services.food_classifier import FoodClassifier
 from app.services.nutrition_service import NutritionService
 from app.services.score_service import calculate_health_score
 from app.services.recommendation_service import generate_recommendations
+from app.services.ocr_service import ocr_service
+from app.services.ingredient_analyzer import analyze_packaged_ingredients
 from PIL import Image
 import io
 import uuid
@@ -83,6 +85,7 @@ async def analyze_food(
 
     return {
         "scan_id": scan_id,
+        "type": "prepared_dish",
         "detected_food": detected_food,
         "confidence": confidence,
         "serving": {
@@ -95,4 +98,61 @@ async def analyze_food(
         "positives": positives,
         "warnings": warnings,
         "recommendations": recommendations
+    }
+
+
+@router.post("/analyze-packaged")
+async def analyze_packaged_food(
+    file: UploadFile = File(...),
+    db_inst=Depends(get_db)
+):
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=400,
+            detail="File must be an image"
+        )
+
+    image_bytes = await file.read()
+    try:
+        image = Image.open(io.BytesIO(image_bytes))
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid image file format")
+
+    # 1. OCR Extraction of text from image
+    extracted_text = ocr_service.extract_text_from_image(image)
+
+    # 2. Analyze extracted ingredient text
+    analysis = analyze_packaged_ingredients(extracted_text)
+
+    scan_id = str(uuid.uuid4())
+
+    try:
+        await db_inst.execute(
+            """INSERT INTO food_scans (id, user_id, detected_food, confidence, calories, protein_g, carbs_g, fat_g, health_score, category, nutrition_json)
+               VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)""",
+            scan_id, 1, f"Packaged Food Label ({analysis['rating']})", 0.95,
+            350, 10, 45, 12,
+            analysis["ingredient_score"], analysis["rating"], json.dumps(analysis)
+        )
+    except Exception as e:
+        print(f"Error saving packaged scan to DB: {e}")
+
+    return {
+        "scan_id": scan_id,
+        "type": "packaged_food",
+        "detected_food": "Packaged Food Ingredient Scan",
+        "confidence": 0.95,
+        "health_score": analysis["ingredient_score"],
+        "category": analysis["rating"],
+        "verdict": analysis["verdict"],
+        "extracted_text": analysis["extracted_text"],
+        "harmful_count": analysis["harmful_count"],
+        "harmful_additives": analysis["harmful_additives"],
+        "healthy_count": analysis["healthy_count"],
+        "healthy_ingredients": analysis["healthy_ingredients"],
+        "recommendations": [
+            "Check ingredient labels for Palm Oil, High Fructose Corn Syrup, and Artificial Preservatives.",
+            "Choose clean-label products with whole grains, nuts, and natural ingredients.",
+            "Avoid foods containing artificial trans fats or synthetic dyes."
+        ]
     }
