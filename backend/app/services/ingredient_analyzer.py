@@ -1,10 +1,10 @@
 import re
 from typing import Dict, List, Any
 
-# Comprehensive Dictionary of Packaged Food Additives & Ingredients
+# Comprehensive Dictionary of Packaged Food Additives & Ingredients with resilient matching patterns
 HARMFUL_INGREDIENTS = [
     {
-        "pattern": r"\b(palm oil|palmolein|palm kernel oil)\b",
+        "pattern": r"(palm oil|palmolein|palm kernel|palm fat)",
         "name": "Palm Oil / Palmolein",
         "category": "Unhealthy Saturated Fat",
         "risk_level": "High",
@@ -12,7 +12,7 @@ HARMFUL_INGREDIENTS = [
         "explanation": "High in saturated fatty acids; frequent consumption increases LDL cholesterol and cardiovascular risk."
     },
     {
-        "pattern": r"\b(high fructose corn syrup|hfcs|corn syrup)\b",
+        "pattern": r"(high fructose|hfcs|corn syrup|glucose syrup)",
         "name": "High Fructose Corn Syrup (HFCS)",
         "category": "Refined Sugar",
         "risk_level": "High",
@@ -20,7 +20,7 @@ HARMFUL_INGREDIENTS = [
         "explanation": "Causes rapid blood sugar spikes, insulin resistance, hepatic fat accumulation, and metabolic risk."
     },
     {
-        "pattern": r"\b(hydrogenated|partially hydrogenated|trans fat|margarine|shortening)\b",
+        "pattern": r"(hydrogenated|partially hydrogenated|trans fat|margarine|shortening)",
         "name": "Trans Fats / Hydrogenated Oils",
         "category": "Hazardous Trans Fat",
         "risk_level": "High",
@@ -28,7 +28,7 @@ HARMFUL_INGREDIENTS = [
         "explanation": "Contains artificial trans fats that raise bad cholesterol (LDL) and significantly increase heart disease risk."
     },
     {
-        "pattern": r"\b(monosodium glutamate|msg|e621|flavor enhancer 621|hydrolyzed vegetable protein)\b",
+        "pattern": r"(monosodium glutamate|msg|e621|621|flavor enhancer 621|hydrolyzed vegetable protein)",
         "name": "Monosodium Glutamate (MSG / E621)",
         "category": "Flavor Enhancer",
         "risk_level": "Medium",
@@ -36,7 +36,7 @@ HARMFUL_INGREDIENTS = [
         "explanation": "Excitotoxin added to trigger overeating; may cause headaches or sensitivity in susceptible individuals."
     },
     {
-        "pattern": r"\b(sodium nitrate|sodium nitrite|potassium nitrate|e250|e251)\b",
+        "pattern": r"(sodium nitrate|sodium nitrite|potassium nitrate|e250|e251|250|251)",
         "name": "Sodium Nitrite / Nitrate (E250/E251)",
         "category": "Preservative",
         "risk_level": "High",
@@ -44,7 +44,7 @@ HARMFUL_INGREDIENTS = [
         "explanation": "Synthetic meat preservative associated with nitrosamine formation and increased health risks."
     },
     {
-        "pattern": r"\b(bha|bht|butylated hydroxyanisole|butylated hydroxytoluene|e320|e321)\b",
+        "pattern": r"(bha|bht|butylated hydroxyanisole|butylated hydroxytoluene|e320|e321|320|321)",
         "name": "BHA / BHT (E320/E321)",
         "category": "Synthetic Antioxidant",
         "risk_level": "High",
@@ -52,7 +52,7 @@ HARMFUL_INGREDIENTS = [
         "explanation": "Synthetic fat preservatives flagged by health authorities for potential endocrine disruption."
     },
     {
-        "pattern": r"\b(sodium benzoate|potassium sorbate|e211|e202)\b",
+        "pattern": r"(sodium benzoate|potassium sorbate|benzoate|sorbate|e211|e202|211|202)",
         "name": "Sodium Benzoate (E211) / Sorbate",
         "category": "Chemical Preservative",
         "risk_level": "Medium",
@@ -60,7 +60,7 @@ HARMFUL_INGREDIENTS = [
         "explanation": "Artificial preservative used to extend shelf life; can react with Vitamin C under heat to form benzene."
     },
     {
-        "pattern": r"\b(aspartame|sucralose|acesulfame|saccharin|e951|e955|e950)\b",
+        "pattern": r"(aspartame|sucralose|acesulfame|saccharin|e951|e955|e950|951|955|950)",
         "name": "Artificial Sweeteners (Aspartame/Sucralose)",
         "category": "Artificial Sweetener",
         "risk_level": "Medium",
@@ -68,7 +68,7 @@ HARMFUL_INGREDIENTS = [
         "explanation": "Synthetic low-calorie sweeteners that can alter gut microbiota and sweet preference thresholds."
     },
     {
-        "pattern": r"\b(tartrazine|allura red|sunset yellow|brilliant blue|red 40|yellow 5|yellow 6|e102|e110|e129|e133)\b",
+        "pattern": r"(tartrazine|allura red|sunset yellow|brilliant blue|red 40|yellow 5|yellow 6|e102|e110|e129|e133|102|110|129|133)",
         "name": "Artificial Synthetic Dyes / Colors",
         "category": "Food Coloring",
         "risk_level": "Medium",
@@ -76,7 +76,7 @@ HARMFUL_INGREDIENTS = [
         "explanation": "Petroleum-derived artificial dyes linked to hyperactivity and sensitivity issues."
     },
     {
-        "pattern": r"\b(refined wheat flour|maida|refined flour)\b",
+        "pattern": r"(refined wheat flour|maida|refined flour|wheat flour \(maida\))",
         "name": "Refined Wheat Flour (Maida)",
         "category": "Processed Carbs",
         "risk_level": "Medium",
@@ -84,7 +84,7 @@ HARMFUL_INGREDIENTS = [
         "explanation": "Stripped of natural bran and fiber; digests rapidly leading to glucose spikes and low satiety."
     },
     {
-        "pattern": r"\b(maltodextrin|dextrose|invert sugar)\b",
+        "pattern": r"(maltodextrin|dextrose|invert sugar|liquid glucose)",
         "name": "Maltodextrin / Dextrose",
         "category": "High Glycemic Sweetener",
         "risk_level": "Medium",
@@ -94,11 +94,11 @@ HARMFUL_INGREDIENTS = [
 ]
 
 HEALTHY_INGREDIENTS = [
-    {"pattern": r"\b(whole wheat|whole grain|whole oats|oat flour|quinoa|brown rice)\b", "name": "Whole Grains & Oats", "benefit": "Rich in dietary fiber and slow-release complex carbs."},
-    {"pattern": r"\b(almonds|walnuts|cashews|chia seeds|flaxseeds|pumpkin seeds|sunflower seeds)\b", "name": "Nuts & Seeds", "benefit": "Provides healthy omega fatty acids, plant protein, and minerals."},
-    {"pattern": r"\b(cocoa powder|dark chocolate|raw cocoa)\b", "name": "Real Cocoa", "benefit": "High in natural polyphenol antioxidants and flavonoids."},
-    {"pattern": r"\b(whey protein|milk protein|pea protein|soy protein)\b", "name": "Protein Concentrates", "benefit": "Supports muscle maintenance and meal satiety."},
-    {"pattern": r"\b(real fruit|apple|banana|strawberry|mango|dates|raisins)\b", "name": "Real Fruit / Fruit Pieces", "benefit": "Contains natural fruit fibers and vitamins without artificial flavors."}
+    {"pattern": r"(whole wheat|whole grain|whole oats|oat flour|quinoa|brown rice|oats)", "name": "Whole Grains & Oats", "benefit": "Rich in dietary fiber and slow-release complex carbs."},
+    {"pattern": r"(almond|walnut|cashew|chia seed|flaxseed|pumpkin seed|sunflower seed|nuts|seeds)", "name": "Nuts & Seeds", "benefit": "Provides healthy omega fatty acids, plant protein, and minerals."},
+    {"pattern": r"(cocoa powder|dark chocolate|raw cocoa|cocoa)", "name": "Real Cocoa", "benefit": "High in natural polyphenol antioxidants and flavonoids."},
+    {"pattern": r"(whey protein|milk protein|pea protein|soy protein)", "name": "Protein Concentrates", "benefit": "Supports muscle maintenance and meal satiety."},
+    {"pattern": r"(real fruit|apple|banana|strawberry|mango|dates|raisins)", "name": "Real Fruit / Fruit Pieces", "benefit": "Contains natural fruit fibers and vitamins without artificial flavors."}
 ]
 
 
@@ -106,7 +106,7 @@ def analyze_packaged_ingredients(extracted_text: str) -> Dict[str, Any]:
     text_clean = extracted_text.strip() if extracted_text else ""
 
     # Handle Unreadable / Empty Text gracefully
-    if not text_clean or len(text_clean) < 5:
+    if not text_clean or len(text_clean) < 4:
         return {
             "extracted_text": "No clear ingredient text detected in this image. Please take a clear, well-lit photo focusing directly on the INGREDIENTS list on the package.",
             "text_detected": False,
