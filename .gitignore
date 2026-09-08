@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Python cache & virtual environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+venv/
+env/
+.venv/
+
+# Environment variables & secrets
+.env
+backend/.env
+
+# Local Databases
+*.db
+*.sqlite
+*.sqlite3
+backend/app/nutriscan.db
+
+# Build outputs
+dist/
+build/
+frontend/dist/
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Scratch scripts
+test_model.py
+backend/test_model.py

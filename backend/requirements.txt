@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+python-jose[cryptography]
+passlib
+bcrypt
+sqlalchemy
+asyncpg
+torch
+torchvision
+pillow
+httpx
+python-dotenv
