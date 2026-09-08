@@ -24,6 +24,7 @@ export const Result = () => {
   }
 
   const isPackaged = result.type === "packaged_food" || !!result.extracted_text
+  const isUnreadable = isPackaged && result.text_detected === false
 
   const scoreCategories = {
     Excellent: { color: "#10b981", text: "Excellent Health Score" },
@@ -34,7 +35,8 @@ export const Result = () => {
     Unhealthy: { color: "#f97316", text: "Unhealthy Option" },
     "Unhealthy / Ultra-Processed": { color: "#f97316", text: "Ultra-Processed Food" },
     "Very Unhealthy": { color: "#ef4444", text: "Very Unhealthy" },
-    "Very Unhealthy / Hazardous Additives": { color: "#ef4444", text: "Hazardous / High Additives" }
+    "Very Unhealthy / Hazardous Additives": { color: "#ef4444", text: "Hazardous / High Additives" },
+    "Unreadable Label / Clear Text Needed": { color: "#ef4444", text: "Text Unreadable — Re-scan Required" }
   }
 
   const categoryInfo = scoreCategories[result.category] || { color: "#3f51b5", text: result.category || "Calculated" }
@@ -47,20 +49,40 @@ export const Result = () => {
 
       <h2 style={{ marginBottom: "1.5rem" }}>Analysis Result</h2>
 
-      {/* Health Score Badge */}
-      <div style={{ textAlign: "center", padding: "1.5rem", background: "#f8fafc", borderRadius: "8px", marginBottom: "1.5rem" }}>
-        <div style={{ fontSize: "3.5rem", fontWeight: "bold", color: categoryInfo.color }}>
-          {result.health_score}<span style={{ fontSize: "1.5rem", color: "#94a3b8" }}>/100</span>
-        </div>
-        <p style={{ color: categoryInfo.color, fontSize: "1.2rem", fontWeight: 600, marginTop: "0.25rem" }}>
-          {categoryInfo.text}
-        </p>
-        {result.verdict && (
-          <p style={{ color: "#475569", fontSize: "0.95rem", marginTop: "0.75rem", fontStyle: "italic", borderTop: "1px solid #e2e8f0", paddingTop: "0.75rem" }}>
-            "{result.verdict}"
+      {/* Unreadable Text Banner */}
+      {isUnreadable ? (
+        <div style={{ padding: "1.5rem", background: "#fff1f2", border: "2px solid #fecdd3", borderRadius: "8px", marginBottom: "1.5rem" }}>
+          <h3 style={{ color: "#9f1239", margin: "0 0 0.5rem 0", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            ⚠️ OCR Text Detection Failed
+          </h3>
+          <p style={{ color: "#881337", fontSize: "0.95rem", margin: "0 0 1rem 0" }}>
+            The system could not read any clear text from this photo.
           </p>
-        )}
-      </div>
+          <div style={{ background: "white", padding: "1rem", borderRadius: "6px", fontSize: "0.9rem", color: "#475569" }}>
+            <strong>💡 How to get accurate ingredient detection:</strong>
+            <ul style={{ margin: "0.5rem 0 0 1.2rem", padding: 0 }}>
+              <li>Focus directly on the <strong>INGREDIENTS text panel</strong> on the back/side of the packaging.</li>
+              <li>Ensure good lighting (avoid reflections, glares, or dark shadows).</li>
+              <li>Hold the camera steady so the text is clear and unblurred.</li>
+            </ul>
+          </div>
+        </div>
+      ) : (
+        /* Health Score Badge */
+        <div style={{ textAlign: "center", padding: "1.5rem", background: "#f8fafc", borderRadius: "8px", marginBottom: "1.5rem" }}>
+          <div style={{ fontSize: "3.5rem", fontWeight: "bold", color: categoryInfo.color }}>
+            {result.health_score}<span style={{ fontSize: "1.5rem", color: "#94a3b8" }}>/100</span>
+          </div>
+          <p style={{ color: categoryInfo.color, fontSize: "1.2rem", fontWeight: 600, marginTop: "0.25rem" }}>
+            {categoryInfo.text}
+          </p>
+          {result.verdict && (
+            <p style={{ color: "#475569", fontSize: "0.95rem", marginTop: "0.75rem", fontStyle: "italic", borderTop: "1px solid #e2e8f0", paddingTop: "0.75rem" }}>
+              "{result.verdict}"
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Item Title */}
       <div style={{ marginBottom: "1.5rem", paddingBottom: "1rem", borderBottom: "1px solid #e2e8f0" }}>
@@ -73,42 +95,49 @@ export const Result = () => {
       {/* PACKAGED FOOD OCR ANALYSIS DISPLAY */}
       {isPackaged ? (
         <>
-          {/* Extracted OCR Text */}
+          {/* Extracted OCR Text Inspection Box */}
           <div style={{ marginBottom: "1.5rem" }}>
             <h3 style={{ color: "#334155", marginBottom: "0.5rem" }}>📝 Extracted Ingredient Text (OCR)</h3>
-            <div style={{ background: "#f8fafc", padding: "1rem", borderRadius: "6px", fontSize: "0.9rem", color: "#334155", fontFamily: "monospace", border: "1px solid #e2e8f0", maxHeight: "150px", overflowY: "auto" }}>
+            <div style={{ background: isUnreadable ? "#fef2f2" : "#f8fafc", padding: "1rem", borderRadius: "6px", fontSize: "0.9rem", color: isUnreadable ? "#991b1b" : "#334155", fontFamily: "monospace", border: `1px solid ${isUnreadable ? "#fca5a5" : "#e2e8f0"}`, maxHeight: "150px", overflowY: "auto" }}>
               {result.extracted_text || "No text detected from image."}
             </div>
+            {result.text_detected && (
+              <p style={{ fontSize: "0.8rem", color: "#166534", marginTop: "0.4rem" }}>
+                ✓ System successfully extracted printed text above and scanned for food additives.
+              </p>
+            )}
           </div>
 
           {/* Identified Harmful Additives */}
-          {result.harmful_additives && result.harmful_additives.length > 0 ? (
-            <div style={{ marginBottom: "1.5rem" }}>
-              <h3 style={{ color: "#991b1b", marginBottom: "0.5rem" }}>
-                ⚠️ Identified Unhealthy & Ultra-Processed Additives ({result.harmful_additives.length})
-              </h3>
-              {result.harmful_additives.map((item, idx) => (
-                <div key={idx} style={{ padding: "0.8rem", background: "#fef2f2", borderLeft: "4px solid #ef4444", borderRadius: "4px", marginBottom: "0.6rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <strong style={{ color: "#991b1b", fontSize: "1rem" }}>{item.name}</strong>
-                    <span style={{ fontSize: "0.75rem", background: "#fee2e2", color: "#991b1b", padding: "0.2rem 0.5rem", borderRadius: "4px", fontWeight: "bold" }}>
-                      {item.risk_level} Risk • {item.category}
-                    </span>
+          {!isUnreadable && (
+            result.harmful_additives && result.harmful_additives.length > 0 ? (
+              <div style={{ marginBottom: "1.5rem" }}>
+                <h3 style={{ color: "#991b1b", marginBottom: "0.5rem" }}>
+                  ⚠️ Identified Unhealthy & Ultra-Processed Additives ({result.harmful_additives.length})
+                </h3>
+                {result.harmful_additives.map((item, idx) => (
+                  <div key={idx} style={{ padding: "0.8rem", background: "#fef2f2", borderLeft: "4px solid #ef4444", borderRadius: "4px", marginBottom: "0.6rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <strong style={{ color: "#991b1b", fontSize: "1rem" }}>{item.name}</strong>
+                      <span style={{ fontSize: "0.75rem", background: "#fee2e2", color: "#991b1b", padding: "0.2rem 0.5rem", borderRadius: "4px", fontWeight: "bold" }}>
+                        {item.risk_level} Risk • {item.category}
+                      </span>
+                    </div>
+                    <p style={{ color: "#7f1d1d", fontSize: "0.88rem", marginTop: "0.3rem" }}>
+                      {item.explanation}
+                    </p>
                   </div>
-                  <p style={{ color: "#7f1d1d", fontSize: "0.88rem", marginTop: "0.3rem" }}>
-                    {item.explanation}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div style={{ padding: "0.8rem", background: "#f0fdf4", color: "#166534", borderRadius: "6px", marginBottom: "1.5rem", fontSize: "0.95rem" }}>
-              ✓ No major hazardous chemical additives or palm oil detected in the scanned text.
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div style={{ padding: "0.8rem", background: "#f0fdf4", color: "#166534", borderRadius: "6px", marginBottom: "1.5rem", fontSize: "0.95rem" }}>
+                ✓ No major hazardous chemical additives or palm oil detected in the scanned text.
+              </div>
+            )
           )}
 
           {/* Healthy Natural Ingredients */}
-          {result.healthy_ingredients && result.healthy_ingredients.length > 0 && (
+          {!isUnreadable && result.healthy_ingredients && result.healthy_ingredients.length > 0 && (
             <div style={{ marginBottom: "1.5rem" }}>
               <h3 style={{ color: "#166534", marginBottom: "0.5rem" }}>🟢 Healthy Natural Ingredients Found</h3>
               {result.healthy_ingredients.map((item, idx) => (

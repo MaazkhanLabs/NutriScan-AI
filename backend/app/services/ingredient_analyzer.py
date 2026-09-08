@@ -103,7 +103,23 @@ HEALTHY_INGREDIENTS = [
 
 
 def analyze_packaged_ingredients(extracted_text: str) -> Dict[str, Any]:
-    text_lower = extracted_text.lower()
+    text_clean = extracted_text.strip() if extracted_text else ""
+
+    # Handle Unreadable / Empty Text gracefully
+    if not text_clean or len(text_clean) < 5:
+        return {
+            "extracted_text": "No clear ingredient text detected in this image. Please take a clear, well-lit photo focusing directly on the INGREDIENTS list on the package.",
+            "text_detected": False,
+            "ingredient_score": 0,
+            "rating": "Unreadable Label / Clear Text Needed",
+            "verdict": "Unable to read ingredient text from photo. Please re-scan with a clearer, well-lit image of the ingredient list.",
+            "harmful_count": 0,
+            "harmful_additives": [],
+            "healthy_count": 0,
+            "healthy_ingredients": []
+        }
+
+    text_lower = text_clean.lower()
     
     score = 100
     harmful_found = []
@@ -146,7 +162,8 @@ def analyze_packaged_ingredients(extracted_text: str) -> Dict[str, Any]:
         verdict = "Avoid or minimize consumption! This product contains hazardous ultra-processed ingredients, trans fats, or heavy chemical additives."
 
     return {
-        "extracted_text": extracted_text if extracted_text else "No clear text detected. Please ensure the ingredient label photo is clear and well-lit.",
+        "extracted_text": text_clean,
+        "text_detected": True,
         "ingredient_score": score,
         "rating": rating,
         "verdict": verdict,
