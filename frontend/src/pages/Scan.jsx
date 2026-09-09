@@ -18,6 +18,17 @@ export const Scan = () => {
     }
   }
 
+  const handleLoadSample = async (sampleUrl, fileName) => {
+    try {
+      const response = await fetch(sampleUrl)
+      const blob = await response.blob()
+      const file = new File([blob], fileName, { type: "image/jpeg" })
+      setSelectedFile(file)
+    } catch (error) {
+      alert("Could not load sample image")
+    }
+  }
+
   const handleAnalyze = async () => {
     if (!selectedFile) return
 
@@ -112,6 +123,27 @@ export const Scan = () => {
           />
         </div>
       )}
+
+      {/* 1-Click Sample Image Selector */}
+      <div style={{ marginBottom: "1.5rem", padding: "1rem", background: "#faf5ff", border: "1px solid #e9d5ff", borderRadius: "8px" }}>
+        <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.9rem", color: "#6b21a8", fontWeight: "bold" }}>
+          🧪 Don't have an image ready? Test with 1-Click Sample Images:
+        </p>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          <button
+            onClick={() => { setScanMode("dish"); handleLoadSample("/samples/samosa_sample.jpg", "samosa_sample.jpg"); }}
+            style={{ padding: "0.4rem 0.8rem", background: "#f3e8ff", color: "#7e22ce", border: "1px solid #d8b4fe", borderRadius: "6px", fontSize: "0.85rem", cursor: "pointer", fontWeight: 600 }}
+          >
+            🍛 Load Samosa Dish Sample
+          </button>
+          <button
+            onClick={() => { setScanMode("packaged"); handleLoadSample("/samples/packaged_label_sample.jpg", "packaged_label_sample.jpg"); }}
+            style={{ padding: "0.4rem 0.8rem", background: "#f3e8ff", color: "#7e22ce", border: "1px solid #d8b4fe", borderRadius: "6px", fontSize: "0.85rem", cursor: "pointer", fontWeight: 600 }}
+          >
+            🏷️ Load Ingredient Label Sample (OCR)
+          </button>
+        </div>
+      </div>
 
       <div>
         <input
