@@ -14,8 +14,22 @@ PRESET_NUTRITION = {
     "chicken biryani": {"calories": 580, "protein_g": 32, "carbs_g": 68, "fat_g": 18, "saturated_fat_g": 4.5, "fiber_g": 3, "sugar_g": 3, "sodium_mg": 690},
     "biryani": {"calories": 560, "protein_g": 28, "carbs_g": 66, "fat_g": 17, "saturated_fat_g": 4.0, "fiber_g": 3, "sugar_g": 3, "sodium_mg": 650},
     "chicken curry": {"calories": 420, "protein_g": 34, "carbs_g": 14, "fat_g": 24, "saturated_fat_g": 6.0, "fiber_g": 2.5, "sugar_g": 4.0, "sodium_mg": 620},
+    "butter chicken": {"calories": 490, "protein_g": 32, "carbs_g": 18, "fat_g": 32, "saturated_fat_g": 16.0, "fiber_g": 2.0, "sugar_g": 7.0, "sodium_mg": 740},
+    "chole bhature": {"calories": 520, "protein_g": 14, "carbs_g": 64, "fat_g": 24, "saturated_fat_g": 6.0, "fiber_g": 8.0, "sugar_g": 4.0, "sodium_mg": 860},
+    "idli": {"calories": 150, "protein_g": 4.5, "carbs_g": 30, "fat_g": 1.0, "saturated_fat_g": 0.2, "fiber_g": 2.5, "sugar_g": 1.0, "sodium_mg": 290},
+    "upma": {"calories": 210, "protein_g": 5.0, "carbs_g": 34, "fat_g": 6.5, "saturated_fat_g": 1.8, "fiber_g": 3.0, "sugar_g": 2.0, "sodium_mg": 380},
+    "rajma chawal": {"calories": 430, "protein_g": 16, "carbs_g": 72, "fat_g": 8.0, "saturated_fat_g": 1.8, "fiber_g": 9.0, "sugar_g": 3.0, "sodium_mg": 580},
+    "aloo gobi": {"calories": 220, "protein_g": 5.0, "carbs_g": 28, "fat_g": 10, "saturated_fat_g": 1.8, "fiber_g": 6.0, "sugar_g": 4.0, "sodium_mg": 460},
+    "palak paneer": {"calories": 340, "protein_g": 16, "carbs_g": 14, "fat_g": 24, "saturated_fat_g": 11.0, "fiber_g": 5.0, "sugar_g": 3.0, "sodium_mg": 610},
+    "naan": {"calories": 280, "protein_g": 8.5, "carbs_g": 45, "fat_g": 7.0, "saturated_fat_g": 3.5, "fiber_g": 2.0, "sugar_g": 2.5, "sodium_mg": 420},
+    "chapati": {"calories": 120, "protein_g": 3.5, "carbs_g": 22, "fat_g": 2.0, "saturated_fat_g": 0.4, "fiber_g": 3.0, "sugar_g": 0.5, "sodium_mg": 110},
+    "gulab jamun": {"calories": 310, "protein_g": 4.0, "carbs_g": 48, "fat_g": 12, "saturated_fat_g": 7.0, "fiber_g": 0.5, "sugar_g": 38, "sodium_mg": 90},
+    "rasgulla": {"calories": 220, "protein_g": 5.0, "carbs_g": 42, "fat_g": 3.5, "saturated_fat_g": 2.0, "fiber_g": 0.0, "sugar_g": 36, "sodium_mg": 60},
+    "jalebi": {"calories": 340, "protein_g": 2.5, "carbs_g": 58, "fat_g": 11, "saturated_fat_g": 3.5, "fiber_g": 0.5, "sugar_g": 44, "sodium_mg": 75},
+    "pani puri": {"calories": 180, "protein_g": 3.5, "carbs_g": 28, "fat_g": 6.5, "saturated_fat_g": 1.2, "fiber_g": 3.0, "sugar_g": 2.5, "sodium_mg": 490},
+    "bhel puri": {"calories": 240, "protein_g": 5.0, "carbs_g": 42, "fat_g": 6.0, "saturated_fat_g": 1.0, "fiber_g": 4.0, "sugar_g": 6.0, "sodium_mg": 510},
 
-    # Food-101 Open-Source Model Classes
+    # Food-101 Open-Source Model Classes & Global Favorites
     "apple pie": {"calories": 411, "protein_g": 3.7, "carbs_g": 58, "fat_g": 19, "saturated_fat_g": 8.0, "fiber_g": 2.5, "sugar_g": 25, "sodium_mg": 327},
     "baby back ribs": {"calories": 612, "protein_g": 44, "carbs_g": 12, "fat_g": 42, "saturated_fat_g": 15.0, "fiber_g": 0.5, "sugar_g": 9, "sodium_mg": 840},
     "baklava": {"calories": 334, "protein_g": 5.0, "carbs_g": 40, "fat_g": 18, "saturated_fat_g": 4.5, "fiber_g": 2.0, "sugar_g": 21, "sodium_mg": 142},

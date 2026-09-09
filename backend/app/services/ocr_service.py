@@ -45,8 +45,11 @@ class OCRService:
         # Common OCR Character Corrections for Food Packaging
         corrections = {
             r"\b1ngredients\b": "ingredients",
+            r"\b1ngred1ents\b": "ingredients",
+            r"\bingred1ents\b": "ingredients",
             r"\bpa1m\b": "palm",
             r"\bpa1mo1ein\b": "palmolein",
+            r"\bpalmole1n\b": "palmolein",
             r"\bh1gh\b": "high",
             r"\bfructos\b": "fructose",
             r"\bsyrup\b": "syrup",
@@ -54,7 +57,14 @@ class OCRService:
             r"\bE[- ]?250\b": "e250",
             r"\bE[- ]?621\b": "e621",
             r"\bE[- ]?320\b": "e320",
+            r"\bE[- ]?319\b": "e319",
             r"\bE[- ]?102\b": "e102",
+            r"\bINS[- ]?\(?621\)?\b": "ins 621",
+            r"\bINS[- ]?\(?211\)?\b": "ins 211",
+            r"\bINS[- ]?\(?319\)?\b": "ins 319",
+            r"\bINS[- ]?\(?320\)?\b": "ins 320",
+            r"\bINS[- ]?\(?250\)?\b": "ins 250",
+            r"\bINS[- ]?\(?407\)?\b": "ins 407",
             r"\btrans[- ]?fat\b": "trans fat",
             r"\bmonosod1um\b": "monosodium",
             r"\bglutamat\b": "glutamate",
@@ -62,8 +72,8 @@ class OCRService:
             r"\bchem1cal\b": "chemical",
         }
 
+        import re
         for pattern, replacement in corrections.items():
-            import re
             text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
 
         return text
