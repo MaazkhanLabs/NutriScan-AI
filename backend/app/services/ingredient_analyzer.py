@@ -92,6 +92,38 @@ HARMFUL_INGREDIENTS = [
         "explanation": "Extremely high glycemic index ingredient that spikes blood glucose faster than table sugar."
     },
     {
+        "pattern": r"(refined edible vegetable oil|refined vegetable oil|refined oil|edible vegetable oil|refined cottonseed oil|refined sunflower oil|refined soybean oil|vegetable oil)",
+        "name": "Refined Edible Vegetable Oil",
+        "category": "Processed Seed & Vegetable Oil",
+        "risk_level": "Medium",
+        "penalty": 15,
+        "explanation": "Highly processed refined oil stripped of natural nutrients; high in omega-6 fats which can promote inflammation when consumed frequently."
+    },
+    {
+        "pattern": r"(\bsugar\b|added sugar|sucrose|white sugar|cane sugar)",
+        "name": "Added Refined Sugar",
+        "category": "Added Refined Sugar",
+        "risk_level": "Medium",
+        "penalty": 12,
+        "explanation": "Added empty calorie sweetener in savory snacks that spikes blood glucose and insulin levels."
+    },
+    {
+        "pattern": r"(fried onion|fried garlic|deep fried|fried crisp|fried potato|fried flakes)",
+        "name": "Fried Ingredients (Fried Onion/Crisps)",
+        "category": "Deep-Fried Component",
+        "risk_level": "Medium",
+        "penalty": 10,
+        "explanation": "Ingredients fried at high temperatures absorb dense, oxidized frying oil calories."
+    },
+    {
+        "pattern": r"(\bsalt\b|added salt|iodised salt|iodized salt|table salt)",
+        "name": "Added Sodium Salt",
+        "category": "Added Sodium",
+        "risk_level": "Low",
+        "penalty": 8,
+        "explanation": "Added sodium content; excessive intake contributes to fluid retention and elevated blood pressure."
+    },
+    {
         "pattern": r"(carrageenan|polysorbate 80|ins 407|ins 433|ins407|ins433|e407|e433)",
         "name": "Carrageenan / Polysorbate Emulsifiers (INS 407/433)",
         "category": "Inflammatory Emulsifier",
