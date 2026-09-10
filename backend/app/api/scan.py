@@ -49,7 +49,7 @@ async def analyze_food(
             "saturated_fat_g": 3.0, "fiber_g": 4, "sugar_g": 5, "sodium_mg": 400
         }
 
-    score_result = calculate_health_score(nutrition)
+    score_result = calculate_health_score(nutrition, detected_food)
     recommendations = generate_recommendations(nutrition)
 
     positives = []
