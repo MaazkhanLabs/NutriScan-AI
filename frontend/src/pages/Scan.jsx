@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "../hooks/useAuth"
 import { useNavigate } from "react-router-dom"
 
@@ -6,8 +6,22 @@ export const Scan = () => {
   const [scanMode, setScanMode] = useState("dish") // "dish" or "packaged"
   const [selectedFile, setSelectedFile] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [progressStep, setProgressStep] = useState(1)
   const { token } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    let interval
+    if (loading) {
+      setProgressStep(1)
+      interval = setInterval(() => {
+        setProgressStep((prev) => (prev < 3 ? prev + 1 : prev))
+      }, 2000)
+    } else {
+      setProgressStep(1)
+    }
+    return () => clearInterval(interval)
+  }, [loading])
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]
@@ -58,14 +72,115 @@ export const Scan = () => {
         alert(data.detail || "Analysis failed")
       }
     } catch (error) {
-      alert("Error connecting to server")
+      alert("Error connecting to server. Please try again.")
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div style={{ maxWidth: "680px", margin: "2rem auto", padding: "0 1rem" }}>
+    <div style={{ maxWidth: "680px", margin: "2rem auto", padding: "0 1rem", position: "relative" }}>
+      
+      {/* Interactive Full-Screen Scanning Progress Overlay Modal */}
+      {loading && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          background: "rgba(15, 23, 42, 0.85)",
+          backdropFilter: "blur(12px)",
+          zIndex: 999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "1.5rem"
+        }}>
+          <div className="glass-card" style={{ 
+            maxWidth: "460px", 
+            width: "100%", 
+            padding: "2.5rem 2rem", 
+            textAlign: "center", 
+            background: "white",
+            borderRadius: "20px",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
+          }}>
+            {/* Animated Pulsing Scanner Orb */}
+            <div style={{
+              width: "80px",
+              height: "80px",
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, #6366f1 0%, #10b981 100%)",
+              margin: "0 auto 1.5rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "2.2rem",
+              boxShadow: "0 0 30px rgba(99, 102, 241, 0.5)",
+              animation: "pulseGlow 1.5s infinite ease-in-out"
+            }}>
+              🧠
+            </div>
+
+            <h3 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#0f172a", marginBottom: "0.5rem" }}>
+              {scanMode === "packaged" ? "Scanning Ingredient Label..." : "Analyzing Food Dish..."}
+            </h3>
+            <p style={{ color: "#64748b", fontSize: "0.92rem", marginBottom: "1.8rem" }}>
+              Our AI engine is extracting text, checking additives, and calculating health scores.
+            </p>
+
+            {/* Step-by-Step Progress Timeline */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem", textAlign: "left" }}>
+              <div style={{
+                padding: "0.8rem 1rem",
+                borderRadius: "10px",
+                background: progressStep >= 1 ? "#eff6ff" : "#f8fafc",
+                border: `1px solid ${progressStep >= 1 ? "#c7d2fe" : "#e2e8f0"}`,
+                color: progressStep >= 1 ? "#3730a3" : "#94a3b8",
+                fontWeight: progressStep >= 1 ? 700 : 500,
+                fontSize: "0.9rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.6rem"
+              }}>
+                <span>{progressStep > 1 ? "✓" : "📷"}</span> 1. Preprocessing image for maximum OCR clarity
+              </div>
+
+              <div style={{
+                padding: "0.8rem 1rem",
+                borderRadius: "10px",
+                background: progressStep >= 2 ? "#ecfdf5" : "#f8fafc",
+                border: `1px solid ${progressStep >= 2 ? "#a7f3d0" : "#e2e8f0"}`,
+                color: progressStep >= 2 ? "#047857" : "#94a3b8",
+                fontWeight: progressStep >= 2 ? 700 : 500,
+                fontSize: "0.9rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.6rem"
+              }}>
+                <span>{progressStep > 2 ? "✓" : "🔍"}</span> 2. Extracting printed text & ingredients list
+              </div>
+
+              <div style={{
+                padding: "0.8rem 1rem",
+                borderRadius: "10px",
+                background: progressStep >= 3 ? "#fffbe6" : "#f8fafc",
+                border: `1px solid ${progressStep >= 3 ? "#fde68a" : "#e2e8f0"}`,
+                color: progressStep >= 3 ? "#92400e" : "#94a3b8",
+                fontWeight: progressStep >= 3 ? 700 : 500,
+                fontSize: "0.9rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.6rem"
+              }}>
+                <span>{progressStep >= 3 ? "⚙️" : "📊"}</span> 3. Evaluating additives, macros & health score
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="glass-card" style={{ padding: "2.5rem 2rem" }}>
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
