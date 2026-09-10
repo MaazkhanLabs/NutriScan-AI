@@ -52,23 +52,68 @@ async def analyze_food(
     score_result = calculate_health_score(nutrition, detected_food)
     recommendations = generate_recommendations(nutrition)
 
+    FRIED_KEYWORDS = [
+        "samosa", "vada", "vada pav", "french fries", "fries", "churros", "donut", 
+        "chole bhature", "bhature", "pakora", "bhajji", "fried", "deep fried", 
+        "spring roll", "pani puri", "bhel puri", "jalebi", "gulab jamun", "poori"
+    ]
+    REFINED_CARB_KEYWORDS = [
+        "samosa", "vada pav", "pav bhaji", "maida", "white bread", "bun", "burger", 
+        "chole bhature", "naan", "pizza", "pastry", "cake", "donut", "doughnut"
+    ]
+
+    fn_lower = detected_food.lower()
+    is_fried = nutrition.get("is_deep_fried", False) or any(k in fn_lower for k in FRIED_KEYWORDS)
+    is_refined = nutrition.get("is_refined_carbs", False) or any(k in fn_lower for k in REFINED_CARB_KEYWORDS)
+
+    # 1. Accurately build POSITIVES (What's Good)
     positives = []
-    if nutrition.get("protein_g", 0) >= 20:
+    if nutrition.get("protein_g", 0) >= 15:
         positives.append(f"High in protein ({nutrition['protein_g']}g)")
+    elif nutrition.get("protein_g", 0) >= 8:
+        positives.append(f"Provides protein ({nutrition['protein_g']}g)")
+
     if nutrition.get("fiber_g", 0) >= 4:
         positives.append(f"Good source of dietary fiber ({nutrition['fiber_g']}g)")
-    if nutrition.get("saturated_fat_g", 0) <= 3:
+    
+    if not is_fried and nutrition.get("saturated_fat_g", 0) <= 3:
         positives.append("Low in saturated fat")
-    if not positives:
-        positives.append("Provides balanced calories for energy")
+    
+    if not is_fried and not is_refined and score_result["score"] >= 70:
+        positives.append("Provides balanced whole-food nutrients")
 
+    if not positives:
+        if is_fried or is_refined:
+            positives.append("Contains vegetable & spice ingredients (Potato/Peas)")
+        else:
+            positives.append("Provides moderate energy")
+
+    # 2. Accurately build WARNINGS (Health Warnings)
     warnings = []
+    if is_fried:
+        warnings.append(f"Deep-Fried Item: Absorbs oxidized frying oils ({nutrition.get('fat_g', 0)}g fat)")
+    
+    if is_refined:
+        warnings.append("Refined Maida / White Flour: High glycemic index causing rapid blood sugar spikes")
+
+    calories = nutrition.get("calories", 0)
+    fat = nutrition.get("fat_g", 0)
+    if calories > 0 and (fat * 9 / calories) > 0.40:
+        fat_pct = round((fat * 9 / calories) * 100)
+        warnings.append(f"High Fat Ratio: {fat_pct}% of total calories come from fat ({fat}g)")
+
     if nutrition.get("sodium_mg", 0) > 600:
-        warnings.append(f"High sodium content ({nutrition['sodium_mg']}mg)")
+        warnings.append(f"High Sodium Content ({nutrition['sodium_mg']}mg)")
+    elif nutrition.get("sodium_mg", 0) > 350:
+        warnings.append(f"Moderate Sodium Content ({nutrition['sodium_mg']}mg)")
+
     if nutrition.get("sugar_g", 0) > 12:
-        warnings.append(f"High in sugar ({nutrition['sugar_g']}g)")
-    if nutrition.get("saturated_fat_g", 0) > 7:
-        warnings.append(f"Elevated saturated fat ({nutrition['saturated_fat_g']}g)")
+        warnings.append(f"High Sugar Content ({nutrition['sugar_g']}g)")
+
+    if nutrition.get("saturated_fat_g", 0) > 6:
+        warnings.append(f"Elevated Saturated Fat ({nutrition['saturated_fat_g']}g)")
+    elif nutrition.get("saturated_fat_g", 0) > 3.5 and is_fried:
+        warnings.append(f"Contains Saturated Frying Fat ({nutrition['saturated_fat_g']}g)")
 
     scan_id = str(uuid.uuid4())
 
