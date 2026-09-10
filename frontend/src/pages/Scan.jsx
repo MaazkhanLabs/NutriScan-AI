@@ -65,87 +65,149 @@ export const Scan = () => {
   }
 
   return (
-    <div style={{ maxWidth: "640px", margin: "2rem auto", padding: "2rem", background: "white", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "1rem" }}>NutriScan AI Scanner</h2>
+    <div style={{ maxWidth: "680px", margin: "2rem auto", padding: "0 1rem" }}>
+      <div className="glass-card" style={{ padding: "2.5rem 2rem" }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <span className="badge badge-primary" style={{ marginBottom: "0.6rem" }}>
+            ✨ AI Powered Scanner
+          </span>
+          <h2 style={{ fontSize: "2rem", fontWeight: "800", color: "#0f172a" }}>
+            NutriScan AI Analysis
+          </h2>
+          <p style={{ color: "#64748b", fontSize: "0.95rem", marginTop: "0.25rem" }}>
+            Select mode & upload photo to analyze healthiness, additives, and macros.
+          </p>
+        </div>
 
-      {/* Mode Selector Tabs */}
-      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", background: "#f1f5f9", padding: "0.4rem", borderRadius: "8px" }}>
-        <button
-          onClick={() => { setScanMode("dish"); setSelectedFile(null); }}
-          style={{
-            flex: 1,
-            padding: "0.75rem",
-            border: "none",
-            borderRadius: "6px",
-            fontSize: "0.95rem",
-            fontWeight: 600,
-            cursor: "pointer",
-            background: scanMode === "dish" ? "#3f51b5" : "transparent",
-            color: scanMode === "dish" ? "white" : "#64748b",
-            transition: "all 0.2s"
-          }}
-        >
-          🍛 Prepared Food Dish
-        </button>
-        <button
-          onClick={() => { setScanMode("packaged"); setSelectedFile(null); }}
-          style={{
-            flex: 1,
-            padding: "0.75rem",
-            border: "none",
-            borderRadius: "6px",
-            fontSize: "0.95rem",
-            fontWeight: 600,
-            cursor: "pointer",
-            background: scanMode === "packaged" ? "#3f51b5" : "transparent",
-            color: scanMode === "packaged" ? "white" : "#64748b",
-            transition: "all 0.2s"
-          }}
-        >
-          🏷️ Packaged Ingredients (OCR)
-        </button>
-      </div>
+        {/* Mode Switcher Segmented Pills */}
+        <div style={{ 
+          display: "flex", 
+          gap: "0.5rem", 
+          marginBottom: "1.8rem", 
+          background: "#f1f5f9", 
+          padding: "0.4rem", 
+          borderRadius: "14px",
+          border: "1px solid #e2e8f0"
+        }}>
+          <button
+            onClick={() => { setScanMode("dish"); setSelectedFile(null); }}
+            style={{
+              flex: 1,
+              padding: "0.8rem",
+              border: "none",
+              borderRadius: "10px",
+              fontSize: "0.95rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              background: scanMode === "dish" ? "white" : "transparent",
+              color: scanMode === "dish" ? "#4f46e5" : "#64748b",
+              boxShadow: scanMode === "dish" ? "0 4px 12px rgba(0,0,0,0.06)" : "none",
+              transition: "all 0.25s ease"
+            }}
+          >
+            🍛 Prepared Meal Dish
+          </button>
+          <button
+            onClick={() => { setScanMode("packaged"); setSelectedFile(null); }}
+            style={{
+              flex: 1,
+              padding: "0.8rem",
+              border: "none",
+              borderRadius: "10px",
+              fontSize: "0.95rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              background: scanMode === "packaged" ? "white" : "transparent",
+              color: scanMode === "packaged" ? "#4f46e5" : "#64748b",
+              boxShadow: scanMode === "packaged" ? "0 4px 12px rgba(0,0,0,0.06)" : "none",
+              transition: "all 0.25s ease"
+            }}
+          >
+            🏷️ Packaged OCR Ingredients
+          </button>
+        </div>
 
-      <div style={{ padding: "0.75rem", background: "#f8fafc", borderRadius: "6px", marginBottom: "1.5rem", fontSize: "0.9rem", color: "#475569", borderLeft: "4px solid #3f51b5" }}>
-        {scanMode === "dish" ? (
-          <span><strong>Dish Recognition Mode:</strong> Upload a photo of a meal or dish to detect calories, macros, and AI health score.</span>
+        {/* Mode Info Callout */}
+        <div style={{ 
+          padding: "1rem 1.2rem", 
+          background: scanMode === "dish" ? "#eff6ff" : "#ecfdf5", 
+          borderLeft: `4px solid ${scanMode === "dish" ? "#6366f1" : "#10b981"}`, 
+          borderRadius: "10px", 
+          marginBottom: "1.8rem", 
+          fontSize: "0.92rem", 
+          color: "#334155" 
+        }}>
+          {scanMode === "dish" ? (
+            <span><strong>Dish Recognition Mode:</strong> Upload a photo of a cooked meal or food dish to analyze calories, macros, and health scores.</span>
+          ) : (
+            <span><strong>OCR Ingredient Scanner:</strong> Upload a photo of the <strong>Ingredients Label</strong> on packaged food (chips, biscuits, snacks) to detect palm oil, MSG, INS additives, and preservatives.</span>
+          )}
+        </div>
+
+        {/* 1-Click Sample Image Selector Pills */}
+        <div style={{ marginBottom: "1.8rem", padding: "1.2rem", background: "#fcf5ff", border: "1px solid #f3e8ff", borderRadius: "12px" }}>
+          <p style={{ margin: "0 0 0.6rem 0", fontSize: "0.88rem", color: "#7e22ce", fontWeight: 700, display: "flex", alignItems: "center", gap: "0.4rem" }}>
+            <span>🧪</span> Don't have an image ready? Test with 1-Click Sample Images:
+          </p>
+          <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
+            <button
+              onClick={() => { setScanMode("dish"); handleLoadSample("/samples/samosa_sample.jpg", "samosa_sample.jpg"); }}
+              style={{ padding: "0.5rem 1rem", background: "white", color: "#6b21a8", border: "1px solid #e9d5ff", borderRadius: "9999px", fontSize: "0.88rem", cursor: "pointer", fontWeight: 600, boxShadow: "0 2px 6px rgba(0,0,0,0.03)" }}
+            >
+              🍛 Load Samosa Dish Sample
+            </button>
+            <button
+              onClick={() => { setScanMode("packaged"); handleLoadSample("/samples/packaged_label_sample.jpg", "packaged_label_sample.jpg"); }}
+              style={{ padding: "0.5rem 1rem", background: "white", color: "#6b21a8", border: "1px solid #e9d5ff", borderRadius: "9999px", fontSize: "0.88rem", cursor: "pointer", fontWeight: 600, boxShadow: "0 2px 6px rgba(0,0,0,0.03)" }}
+            >
+              🏷️ Load Ingredient Label Sample (OCR)
+            </button>
+          </div>
+        </div>
+
+        {/* Dropzone Container */}
+        {selectedFile ? (
+          <div style={{ width: "100%", height: "260px", border: "2px solid #6366f1", borderRadius: "14px", marginBottom: "1.8rem", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", background: "#f8fafc", position: "relative" }}>
+            <img
+              src={URL.createObjectURL(selectedFile)}
+              alt="Selected food"
+              style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+            />
+            <button
+              onClick={() => setSelectedFile(null)}
+              style={{ position: "absolute", top: "10px", right: "10px", background: "rgba(15, 23, 42, 0.75)", color: "white", border: "none", borderRadius: "50%", width: "32px", height: "32px", cursor: "pointer", fontWeight: "bold" }}
+            >
+              ✕
+            </button>
+          </div>
         ) : (
-          <span><strong>OCR Ingredient Scanner:</strong> Upload a photo of the <strong>Ingredients Label</strong> on packaged food (e.g. chips, biscuits, cereal) to detect palm oil, trans fats, preservatives, and harmful additives.</span>
+          <div 
+            onClick={() => document.getElementById("food-image-input").click()}
+            style={{ 
+              width: "100%", 
+              padding: "3rem 1.5rem", 
+              border: "2px dashed #cbd5e1", 
+              borderRadius: "14px", 
+              marginBottom: "1.8rem", 
+              textAlign: "center", 
+              cursor: "pointer",
+              background: "#f8fafc",
+              transition: "all 0.2s ease"
+            }}
+          >
+            <div style={{ fontSize: "2.8rem", marginBottom: "0.8rem" }}>
+              {scanMode === "dish" ? "📸" : "📄"}
+            </div>
+            <h4 style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1e293b", marginBottom: "0.3rem" }}>
+              Click to browse or drop food image here
+            </h4>
+            <p style={{ color: "#94a3b8", fontSize: "0.88rem" }}>
+              Supports PNG, JPG, JPEG, WEBP files
+            </p>
+          </div>
         )}
-      </div>
 
-      {selectedFile && (
-        <div style={{ width: "100%", height: "240px", border: "1px dashed #cbd5e1", borderRadius: "8px", marginBottom: "1.5rem", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", background: "#f8fafc" }}>
-          <img
-            src={URL.createObjectURL(selectedFile)}
-            alt="Selected food"
-            style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-          />
-        </div>
-      )}
-
-      {/* 1-Click Sample Image Selector */}
-      <div style={{ marginBottom: "1.5rem", padding: "1rem", background: "#faf5ff", border: "1px solid #e9d5ff", borderRadius: "8px" }}>
-        <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.9rem", color: "#6b21a8", fontWeight: "bold" }}>
-          🧪 Don't have an image ready? Test with 1-Click Sample Images:
-        </p>
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-          <button
-            onClick={() => { setScanMode("dish"); handleLoadSample("/samples/samosa_sample.jpg", "samosa_sample.jpg"); }}
-            style={{ padding: "0.4rem 0.8rem", background: "#f3e8ff", color: "#7e22ce", border: "1px solid #d8b4fe", borderRadius: "6px", fontSize: "0.85rem", cursor: "pointer", fontWeight: 600 }}
-          >
-            🍛 Load Samosa Dish Sample
-          </button>
-          <button
-            onClick={() => { setScanMode("packaged"); handleLoadSample("/samples/packaged_label_sample.jpg", "packaged_label_sample.jpg"); }}
-            style={{ padding: "0.4rem 0.8rem", background: "#f3e8ff", color: "#7e22ce", border: "1px solid #d8b4fe", borderRadius: "6px", fontSize: "0.85rem", cursor: "pointer", fontWeight: 600 }}
-          >
-            🏷️ Load Ingredient Label Sample (OCR)
-          </button>
-        </div>
-      </div>
-
-      <div>
         <input
           id="food-image-input"
           type="file"
@@ -153,41 +215,24 @@ export const Scan = () => {
           onChange={handleFileChange}
           style={{ display: "none" }}
         />
-        <button
-          onClick={() => document.getElementById("food-image-input").click()}
-          style={{
-            width: "100%",
-            padding: "0.9rem",
-            background: "#3f51b5",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            fontSize: "1rem",
-            fontWeight: 600,
-            cursor: "pointer"
-          }}
-        >
-          {selectedFile ? "Change Image" : scanMode === "dish" ? "📷 Select Food Dish Image" : "📸 Select Packaged Ingredient Label Photo"}
-        </button>
+
+        {/* Action Button */}
         <button
           onClick={handleAnalyze}
           disabled={!selectedFile || loading}
+          className="btn-primary"
           style={{
             width: "100%",
-            padding: "0.9rem",
-            background: selectedFile && !loading ? "#10b981" : "#cbd5e1",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            fontSize: "1rem",
-            fontWeight: 600,
-            marginTop: "1rem",
+            padding: "1rem",
+            borderRadius: "12px",
+            fontSize: "1.05rem",
+            opacity: selectedFile && !loading ? 1 : 0.65,
             cursor: selectedFile && !loading ? "pointer" : "not-allowed"
           }}
         >
           {loading
-            ? scanMode === "packaged" ? "Reading Ingredients Label with OCR..." : "Analyzing Food Dish..."
-            : scanMode === "packaged" ? "🔍 Read Ingredients & Analyze Health" : "🔍 Analyze Food Dish"}
+            ? scanMode === "packaged" ? "🔍 Running OCR & Additive Detection..." : "🧠 Running AI Neural Classification..."
+            : scanMode === "packaged" ? "🔍 Analyze Packaged Ingredients" : "🔍 Analyze Food Dish"}
         </button>
       </div>
     </div>

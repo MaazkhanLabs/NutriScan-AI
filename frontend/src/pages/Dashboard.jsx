@@ -20,50 +20,72 @@ export const Dashboard = () => {
   }, [])
 
   return (
-    <div style={{ maxWidth: "800px", margin: "2rem auto", padding: "2rem" }}>
-      <h2 style={{ marginBottom: "1.5rem", color: "#1e293b" }}>Dashboard</h2>
+    <div style={{ maxWidth: "960px", margin: "2rem auto", padding: "0 1rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+        <div>
+          <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "#0f172a" }}>My Health Dashboard</h2>
+          <p style={{ color: "#64748b", fontSize: "0.98rem" }}>Daily nutritional intake summary & recent AI scans.</p>
+        </div>
+        <Link to="/scan" className="btn-primary" style={{ textDecoration: "none", borderRadius: "9999px", padding: "0.75rem 1.5rem" }}>
+          📷 New Scan
+        </Link>
+      </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1rem", marginBottom: "2rem" }}>
-        <div style={{ background: "#3f51b5", color: "white", padding: "1.5rem", borderRadius: "8px", boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}>
-          <div style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "0.25rem" }}>{stats.calories}</div>
-          <div style={{ opacity: 0.9 }}>Today's Calories</div>
+      {/* 4 Metric Cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.25rem", marginBottom: "2.5rem" }}>
+        <div className="glass-card" style={{ padding: "1.6rem" }}>
+          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#6366f1", textTransform: "uppercase" }}>TODAY'S CALORIES</div>
+          <div style={{ fontSize: "2.4rem", fontWeight: 800, color: "#0f172a", margin: "0.3rem 0" }}>{stats.calories} <span style={{ fontSize: "1rem", color: "#94a3b8" }}>kcal</span></div>
+          <div style={{ fontSize: "0.82rem", color: "#64748b" }}>Target: ~2,000 kcal</div>
         </div>
-        <div style={{ background: "#10b981", color: "white", padding: "1.5rem", borderRadius: "8px", boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}>
-          <div style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "0.25rem" }}>{stats.protein}g</div>
-          <div style={{ opacity: 0.9 }}>Protein Intake</div>
+
+        <div className="glass-card" style={{ padding: "1.6rem" }}>
+          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#10b981", textTransform: "uppercase" }}>PROTEIN INTAKE</div>
+          <div style={{ fontSize: "2.4rem", fontWeight: 800, color: "#0f172a", margin: "0.3rem 0" }}>{stats.protein} <span style={{ fontSize: "1rem", color: "#94a3b8" }}>g</span></div>
+          <div style={{ fontSize: "0.82rem", color: "#64748b" }}>Target: ~60g daily</div>
         </div>
-        <div style={{ background: "#f59e0b", color: "white", padding: "1.5rem", borderRadius: "8px", boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}>
-          <div style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "0.25rem" }}>{stats.meals}</div>
-          <div style={{ opacity: 0.9 }}>Meals Scanned</div>
+
+        <div className="glass-card" style={{ padding: "1.6rem" }}>
+          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#f59e0b", textTransform: "uppercase" }}>MEALS SCANNED</div>
+          <div style={{ fontSize: "2.4rem", fontWeight: 800, color: "#0f172a", margin: "0.3rem 0" }}>{stats.meals} <span style={{ fontSize: "1rem", color: "#94a3b8" }}>items</span></div>
+          <div style={{ fontSize: "0.82rem", color: "#64748b" }}>Logged today</div>
         </div>
-        <div style={{ background: "#8b5cf6", color: "white", padding: "1.5rem", borderRadius: "8px", boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}>
-          <div style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "0.25rem" }}>{stats.avg_score}/100</div>
-          <div style={{ opacity: 0.9 }}>Average Score</div>
+
+        <div className="glass-card" style={{ padding: "1.6rem" }}>
+          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#8b5cf6", textTransform: "uppercase" }}>AVERAGE HEALTH SCORE</div>
+          <div style={{ fontSize: "2.4rem", fontWeight: 800, color: "#0f172a", margin: "0.3rem 0" }}>{stats.avg_score} <span style={{ fontSize: "1rem", color: "#94a3b8" }}>/100</span></div>
+          <div style={{ fontSize: "0.82rem", color: "#64748b" }}>Overall food rating</div>
         </div>
       </div>
 
-      <div style={{ background: "white", padding: "1.5rem", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-          <h3 style={{ margin: 0, color: "#1e293b" }}>Recent Scans</h3>
-          <Link to="/scan" style={{ color: "#3f51b5", fontWeight: 600, textDecoration: "none" }}>+ New Scan</Link>
+      {/* Recent Scans Table Container */}
+      <div className="glass-card" style={{ padding: "2rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+          <h3 style={{ fontSize: "1.3rem", fontWeight: 800, color: "#0f172a" }}>Recent AI Scans</h3>
+          <Link to="/history" style={{ color: "#4f46e5", fontWeight: 700, textDecoration: "none", fontSize: "0.92rem" }}>View All History →</Link>
         </div>
 
         {recentScans.length === 0 ? (
-          <p style={{ color: "#64748b", margin: "1rem 0" }}>No food items scanned yet today. Start by scanning your meal!</p>
+          <div style={{ textAlign: "center", padding: "2rem", color: "#64748b" }}>
+            <p style={{ margin: "0 0 1rem" }}>No food scans logged today. Start by scanning your first meal!</p>
+            <Link to="/scan" className="btn-primary" style={{ textDecoration: "none" }}>Scan Meal Now</Link>
+          </div>
         ) : (
-          <ul style={{ listStyle: "none", padding: 0 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
             {recentScans.map((scan) => (
-              <li key={scan.id} style={{ padding: "0.8rem 0", borderBottom: "1px solid #f1f5f9", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div key={scan.id} style={{ padding: "1rem 1.2rem", background: "white", borderRadius: "12px", border: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                  <span style={{ fontWeight: 600, color: "#1e293b" }}>{scan.detected_food}</span>
-                  <span style={{ fontSize: "0.85rem", color: "#64748b", marginLeft: "0.75rem" }}>{scan.calories} kcal</span>
+                  <div style={{ fontWeight: 700, color: "#0f172a", fontSize: "1.05rem" }}>{scan.detected_food}</div>
+                  <div style={{ fontSize: "0.85rem", color: "#64748b", marginTop: "0.2rem" }}>
+                    🔥 {scan.calories} kcal | Protein: {scan.protein_g || 0}g
+                  </div>
                 </div>
-                <span style={{ background: "#f1f5f9", padding: "0.25rem 0.6rem", borderRadius: "4px", fontWeight: 600, color: "#3f51b5" }}>
+                <span className={`badge ${scan.health_score >= 70 ? "badge-emerald" : scan.health_score >= 50 ? "badge-amber" : "badge-rose"}`}>
                   {scan.health_score}/100 ({scan.category})
                 </span>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>
