@@ -1,14 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from datetime import timedelta
 from app.core.database import db, get_db
-from app.core.security import create_access_token, decode_access_token
+from app.core.security import create_access_token, decode_access_token, hash_password, verify_password
 from app.schemas.user import UserCreate, UserLogin
-from passlib.context import CryptContext
 from typing import Optional
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @router.post("/register")
 async def register(user_data: UserCreate, db_inst=Depends(get_db)):
@@ -21,7 +18,7 @@ async def register(user_data: UserCreate, db_inst=Depends(get_db)):
             detail="Email already registered"
         )
 
-    hashed_password = pwd_context.hash(user_data.password)
+    hashed_password = hash_password(user_data.password)
 
     user_id = await db_inst.fetch_val(
         """INSERT INTO users (name, email, password_hash, goal)
@@ -32,7 +29,7 @@ async def register(user_data: UserCreate, db_inst=Depends(get_db)):
 
     access_token = create_access_token(
         subject=str(user_id or 1),
-        expires_delta=timedelta(minutes=60*24)
+        expires_delta=timedelta(days=7)
     )
 
     return {"access_token": access_token, "token_type": "bearer", "user": {"id": user_id, "name": user_data.name, "email": user_data.email}}
@@ -43,7 +40,7 @@ async def login(credentials: UserLogin, db_inst=Depends(get_db)):
         "SELECT id, name, email, password_hash, goal FROM users WHERE email = $1", credentials.email
     )
 
-    if not user or not pwd_context.verify(credentials.password, user["password_hash"]):
+    if not user or not verify_password(credentials.password, user["password_hash"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password"
