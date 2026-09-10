@@ -92,12 +92,36 @@ HARMFUL_INGREDIENTS = [
         "explanation": "Extremely high glycemic index ingredient that spikes blood glucose faster than table sugar."
     },
     {
-        "pattern": r"(refined edible vegetable oil|refined vegetable oil|refined oil|edible vegetable oil|refined cottonseed oil|refined sunflower oil|refined soybean oil|vegetable oil)",
-        "name": "Refined Edible Vegetable Oil",
+        "pattern": r"(edta|calcium disodium edta|disodium edta|e385|ins 385|ins385)",
+        "name": "Calcium Disodium EDTA (E385)",
+        "category": "Synthetic Chemical Chelator / Preservative",
+        "risk_level": "High",
+        "penalty": 12,
+        "explanation": "Synthetic chemical compound used to prevent discoloration in processed condiments; restricted in high doses due to mineral binding."
+    },
+    {
+        "pattern": r"(sorbic acid|potassium sorbate|calcium sorbate|e200|e202|ins 200|ins 202|ins200|ins202)",
+        "name": "Sorbic Acid / Sorbate Preservatives (E200/E202)",
+        "category": "Chemical Antimicrobial Preservative",
+        "risk_level": "Medium",
+        "penalty": 10,
+        "explanation": "Synthetic chemical preservative used to prevent mold and yeast growth in sauces and spreads."
+    },
+    {
+        "pattern": r"(modified starch|modified food starch|modified corn starch|modified potato starch|ins 1422|ins 1442|e1422|e1442)",
+        "name": "Modified Food Starch (Ultra-Processed Thickener)",
+        "category": "Ultra-Processed Thickener",
+        "risk_level": "Medium",
+        "penalty": 8,
+        "explanation": "Chemically altered food thickener used in processed spreads; acts as a fast-digesting refined carbohydrate."
+    },
+    {
+        "pattern": r"(soybean oil|soy oil|canola oil|sunflower oil|cottonseed oil|corn oil|refined edible vegetable oil|refined vegetable oil|refined oil|edible vegetable oil|vegetable oil)",
+        "name": "Refined Seed & Vegetable Oils (Soybean/Canola)",
         "category": "Processed Seed & Vegetable Oil",
         "risk_level": "Medium",
         "penalty": 15,
-        "explanation": "Highly processed refined oil stripped of natural nutrients; high in omega-6 fats which can promote inflammation when consumed frequently."
+        "explanation": "Highly processed refined seed oils stripped of natural nutrients; high in omega-6 fatty acids which promote inflammation when consumed frequently."
     },
     {
         "pattern": r"(\bsugar\b|added sugar|sucrose|white sugar|cane sugar)",
